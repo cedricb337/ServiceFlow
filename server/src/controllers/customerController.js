@@ -14,3 +14,25 @@ const customers = [
 export const getCustomers = (req, res) => {
   res.status(200).json(customers);
 };
+
+export const getCustomerById = (req, res) => {
+  const customerId = Number(req.params.id);
+
+  if (Number.isNaN(customerId)) {
+    return res.status(400).json({
+      message: "Invalid customer ID",
+    });
+  }
+
+  const customer = customers.find(
+    (customer) => customer.id === customerId
+  );
+
+  if (!customer) {
+    return res.status(404).json({
+      message: "Customer not found",
+    });
+  }
+
+  res.status(200).json(customer);
+};
