@@ -36,3 +36,23 @@ export const getCustomerById = (req, res) => {
 
   res.status(200).json(customer);
 };
+
+export const createCustomer = (req, res) => {
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({
+      message: "Name and email are required",
+    });
+  }
+
+  const newCustomer = {
+    id: customers.length + 1,
+    name,
+    email,
+  };
+
+  customers.push(newCustomer);
+
+  return res.status(201).json(newCustomer);
+};
