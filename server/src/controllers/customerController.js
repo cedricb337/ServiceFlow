@@ -56,3 +56,40 @@ export const createCustomer = (req, res) => {
 
   return res.status(201).json(newCustomer);
 };
+
+export const updateCustomer = (req, res) => {
+  const customerId = Number(req.params.id);
+
+  if (Number.isNaN(customerId)) {
+    return res.status(400).json({
+      message: "Invalid customer ID",
+    });
+  }
+
+  const customer = customers.find(
+    (customer) => customer.id === customerId
+  );
+
+  if (!customer) {
+    return res.status(404).json({
+      message: "Customer not found",
+    });
+  }
+
+  const { name, email } = req.body;
+
+  if (!name && !email) {
+    return res.status(400).json({
+      message: "Name or email is required",
+    });
+  }
+
+  if (name !== undefined) {
+  customer.name = name;
+}
+
+  if (email !== undefined) {
+    customer.email = email;
+  }
+  return res.status(200).json(customer);
+}
