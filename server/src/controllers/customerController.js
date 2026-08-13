@@ -46,8 +46,13 @@ export const createCustomer = (req, res) => {
     });
   }
 
+  const nextId =
+  customers.length > 0
+    ? Math.max(...customers.map((customer) => customer.id)) + 1
+    : 1;
+
   const newCustomer = {
-    id: customers.length + 1,
+    id: nextId,
     name,
     email,
   };
@@ -92,4 +97,28 @@ export const updateCustomer = (req, res) => {
     customer.email = email;
   }
   return res.status(200).json(customer);
+}
+
+export const deleteCustomer = (req, res) => {
+  const customerId = Number(req.params.id);
+
+  if (Number.isNaN(customerId)) {
+    return res.status(400).json({
+      message: "Invalid customer ID",
+    });
+  }
+
+  const customerIndex = customers.findIndex(
+    (customer) => customer.id === customerId
+  );
+
+  if (customerIndex === -1) {
+  return res.status(404).json({
+    message: "Customer not found",
+  });
+}
+
+customers.splice(customerIndex, 1);
+
+return res.status(204).send();
 }
