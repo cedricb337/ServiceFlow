@@ -11,6 +11,11 @@ const customers = [
   },
 ];
 
+const isValidEmail = (email) => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email.trim());
+};
+
 export const getCustomers = (req, res) => {
   res.status(200).json(customers);
 };
@@ -45,6 +50,26 @@ export const createCustomer = (req, res) => {
       message: "Name and email are required",
     });
   }
+
+  if (typeof name !== "string" || !name.trim()) {
+    return res.status(400).json({
+      message: "Name must be a non-empty string",
+    });
+  }
+
+    if (typeof email !== "string" || !email.trim()) {
+    return res.status(400).json({
+      message: "Email must be a non-empty string",
+    });
+  }
+
+  
+      if (!isValidEmail(email)) {
+    return res.status(400).json({
+      message: "Email format is invalid",
+    });
+  }
+
 
   const nextId =
   customers.length > 0
@@ -90,12 +115,30 @@ export const updateCustomer = (req, res) => {
   }
 
   if (name !== undefined) {
-  customer.name = name;
+
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+      message: "Name must be a non-empty string",
+    });
+  }
+    customer.name = name;
 }
 
   if (email !== undefined) {
-    customer.email = email;
+  if (typeof email !== "string" || !email.trim()) {
+    return res.status(400).json({
+      message: "Email must be a non-empty string",
+    });
   }
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({
+      message: "Email format is invalid",
+    });
+  }
+
+  customer.email = email;
+}
   return res.status(200).json(customer);
 }
 
