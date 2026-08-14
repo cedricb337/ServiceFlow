@@ -1,15 +1,5 @@
-const customers = [
-  {
-    id: 1,
-    name: "Northside Plumbing",
-    email: "contact@northsideplumbing.ca",
-  },
-  {
-    id: 2,
-    name: "GreenLeaf Landscaping",
-    email: "hello@greenleaf.ca",
-  },
-];
+import { getAllCustomers, findCustomerById, createCustomerRecord, updateCustomerRecord, deleteCustomerRecord } from "../services/customerService.js";
+
 
 const isValidEmail = (email) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,6 +7,8 @@ const isValidEmail = (email) => {
 };
 
 export const getCustomers = (req, res) => {
+  const customers = getAllCustomers();
+
   res.status(200).json(customers);
 };
 
@@ -29,9 +21,7 @@ export const getCustomerById = (req, res) => {
     });
   }
 
-  const customer = customers.find(
-    (customer) => customer.id === customerId
-  );
+  const customer = findCustomerById(customerId);
 
   if (!customer) {
     return res.status(404).json({
@@ -71,21 +61,10 @@ export const createCustomer = (req, res) => {
   }
 
 
-  const nextId =
-  customers.length > 0
-    ? Math.max(...customers.map((customer) => customer.id)) + 1
-    : 1;
-
-  const newCustomer = {
-    id: nextId,
-    name,
-    email,
-  };
-
-  customers.push(newCustomer);
+  const newCustomer = createCustomerRecord(name, email);
 
   return res.status(201).json(newCustomer);
-};
+  };
 
 export const updateCustomer = (req, res) => {
   const customerId = Number(req.params.id);
@@ -96,9 +75,7 @@ export const updateCustomer = (req, res) => {
     });
   }
 
-  const customer = customers.find(
-    (customer) => customer.id === customerId
-  );
+  const customer = findCustomerById(customerId);
 
   if (!customer) {
     return res.status(404).json({
@@ -121,7 +98,7 @@ export const updateCustomer = (req, res) => {
       message: "Name must be a non-empty string",
     });
   }
-    customer.name = name;
+    
 }
 
   if (email !== undefined) {
@@ -137,10 +114,12 @@ export const updateCustomer = (req, res) => {
     });
   }
 
-  customer.email = email;
+  
 }
-  return res.status(200).json(customer);
-}
+  const updatedCustomer = updateCustomerRecord(customer, name, email);
+
+  return res.status(200).json(updatedCustomer);
+};
 
 export const deleteCustomer = (req, res) => {
   const customerId = Number(req.params.id);
@@ -150,18 +129,13 @@ export const deleteCustomer = (req, res) => {
       message: "Invalid customer ID",
     });
   }
+  const wasDeleted = deleteCustomerRecord(customerId);
 
-  const customerIndex = customers.findIndex(
-    (customer) => customer.id === customerId
-  );
+    if (!wasDeleted) {
+      return res.status(404).json({
+        message: "Customer not found",
+      });
+    }
 
-  if (customerIndex === -1) {
-  return res.status(404).json({
-    message: "Customer not found",
-  });
-}
-
-customers.splice(customerIndex, 1);
-
-return res.status(204).send();
+    return res.status(204).send();
 }
