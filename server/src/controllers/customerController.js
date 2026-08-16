@@ -13,13 +13,8 @@ export const getCustomers = (req, res) => {
 };
 
 export const getCustomerById = (req, res) => {
-  const customerId = Number(req.params.id);
-
-  if (Number.isNaN(customerId)) {
-    return res.status(400).json({
-      message: "Invalid customer ID",
-    });
-  }
+  const customerId = req.customerId;
+  
 
   const customer = findCustomerById(customerId);
 
@@ -55,7 +50,7 @@ export const createCustomer = (req, res) => {
 
   
       if (!isValidEmail(email)) {
-    return res.status(400).json({
+        return res.status(400).json({
       message: "Email format is invalid",
     });
   }
@@ -67,13 +62,7 @@ export const createCustomer = (req, res) => {
   };
 
 export const updateCustomer = (req, res) => {
-  const customerId = Number(req.params.id);
-
-  if (Number.isNaN(customerId)) {
-    return res.status(400).json({
-      message: "Invalid customer ID",
-    });
-  }
+  const customerId = req.customerId;
 
   const customer = findCustomerById(customerId);
 
@@ -122,13 +111,9 @@ export const updateCustomer = (req, res) => {
 };
 
 export const deleteCustomer = (req, res) => {
-  const customerId = Number(req.params.id);
+  
+  const customerId = req.customerId;
 
-  if (Number.isNaN(customerId)) {
-    return res.status(400).json({
-      message: "Invalid customer ID",
-    });
-  }
   const wasDeleted = deleteCustomerRecord(customerId);
 
     if (!wasDeleted) {
