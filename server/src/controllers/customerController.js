@@ -1,10 +1,7 @@
 import { getAllCustomers, findCustomerById, createCustomerRecord, updateCustomerRecord, deleteCustomerRecord } from "../services/customerService.js";
 
 
-const isValidEmail = (email) => {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailPattern.test(email.trim());
-};
+
 
 export const getCustomers = (req, res) => {
   const customers = getAllCustomers();
@@ -30,31 +27,6 @@ export const getCustomerById = (req, res) => {
 export const createCustomer = (req, res) => {
   const { name, email } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).json({
-      message: "Name and email are required",
-    });
-  }
-
-  if (typeof name !== "string" || !name.trim()) {
-    return res.status(400).json({
-      message: "Name must be a non-empty string",
-    });
-  }
-
-    if (typeof email !== "string" || !email.trim()) {
-    return res.status(400).json({
-      message: "Email must be a non-empty string",
-    });
-  }
-
-  
-      if (!isValidEmail(email)) {
-        return res.status(400).json({
-      message: "Email format is invalid",
-    });
-  }
-
 
   const newCustomer = createCustomerRecord(name, email);
 
@@ -74,37 +46,6 @@ export const updateCustomer = (req, res) => {
 
   const { name, email } = req.body;
 
-  if (!name && !email) {
-    return res.status(400).json({
-      message: "Name or email is required",
-    });
-  }
-
-  if (name !== undefined) {
-
-    if (typeof name !== "string" || !name.trim()) {
-      return res.status(400).json({
-      message: "Name must be a non-empty string",
-    });
-  }
-    
-}
-
-  if (email !== undefined) {
-  if (typeof email !== "string" || !email.trim()) {
-    return res.status(400).json({
-      message: "Email must be a non-empty string",
-    });
-  }
-
-  if (!isValidEmail(email)) {
-    return res.status(400).json({
-      message: "Email format is invalid",
-    });
-  }
-
-  
-}
   const updatedCustomer = updateCustomerRecord(customer, name, email);
 
   return res.status(200).json(updatedCustomer);
