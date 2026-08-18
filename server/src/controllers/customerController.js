@@ -3,59 +3,75 @@ import { getAllCustomers, findCustomerById, createCustomerRecord, updateCustomer
 
 
 
-export const getCustomers = (req, res) => {
-  const customers = getAllCustomers();
+export const getCustomers = async (req, res, next) => {
+  try {
+    const customers = await getAllCustomers();
 
-  res.status(200).json(customers);
-};
-
-export const getCustomerById = (req, res) => {
-  const customerId = req.customerId;
-  
-
-  const customer = findCustomerById(customerId);
-
-  if (!customer) {
-    return res.status(404).json({
-      message: "Customer not found",
-    });
+    res.status(200).json(customers);
+  } catch (err) {
+    next(err);
   }
-
-  res.status(200).json(customer);
 };
 
-export const createCustomer = (req, res) => {
-  const { name, email } = req.body;
+export const getCustomerById = async (req, res, next) => {
+  try {
+    const customer = await findCustomerById(req.customerId);
 
+    if (!customer) {
+      return res.status(404).json({
+        message: "Customer not found",
+      });
+    }
 
-  const newCustomer = createCustomerRecord(name, email);
-
-  return res.status(201).json(newCustomer);
-  };
-
-export const updateCustomer = (req, res) => {
-  const customerId = req.customerId;
-
-  const customer = findCustomerById(customerId);
-
-  if (!customer) {
-    return res.status(404).json({
-      message: "Customer not found",
-    });
+    res.status(200).json(customer);
+  } catch (err) {
+    next(err);
   }
-
-  const { name, email } = req.body;
-
-  const updatedCustomer = updateCustomerRecord(customer, name, email);
-
-  return res.status(200).json(updatedCustomer);
 };
 
-export const deleteCustomer = (req, res) => {
-  
-  const customerId = req.customerId;
+export const createCustomer = async (req, res, next) => {
+  try {
+    const { name, email } = req.body;
 
-  const wasDeleted = deleteCustomerRecord(customerId);
+    const newCustomer = await createCustomerRecord(name, email);
+
+    return res.status(201).json(newCustomer);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.customerId;
+
+    const customer = await findCustomerById(customerId);
+
+    if (!customer) {
+      return res.status(404).json({
+        message: "Customer not found",
+      });
+    }
+
+    const { name, email } = req.body;
+
+    const updatedCustomer = await updateCustomerRecord(
+      customer,
+      name,
+      email
+    );
+
+    return res.status(200).json(updatedCustomer);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.customerId;
+
+    const wasDeleted = await deleteCustomerRecord(customerId);
 
     if (!wasDeleted) {
       return res.status(404).json({
@@ -64,4 +80,7 @@ export const deleteCustomer = (req, res) => {
     }
 
     return res.status(204).send();
-}
+  } catch (err) {
+    next(err);
+  }
+};

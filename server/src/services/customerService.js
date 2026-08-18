@@ -11,17 +11,17 @@ const customers = [
   },
 ];
 
-export const getAllCustomers = () => {
+export const getAllCustomers = async () => {
   return customers;
 };
 
-export const findCustomerById = (customerId) => {
+export const findCustomerById = async (customerId) => {
   return customers.find(
     (customer) => customer.id === customerId
   );
 };
 
-export const createCustomerRecord = (name, email) => {
+export const createCustomerRecord = async (name, email) => {
   const nextId =
     customers.length > 0
       ? Math.max(...customers.map((customer) => customer.id)) + 1
@@ -38,7 +38,7 @@ export const createCustomerRecord = (name, email) => {
   return newCustomer;
 };
 
-export const updateCustomerRecord = (customer, name, email) => {
+export const updateCustomerRecord = async (customer, name, email) => {
   if (name !== undefined) {
     customer.name = name;
   }
@@ -50,7 +50,7 @@ export const updateCustomerRecord = (customer, name, email) => {
   return customer;
 };
 
-export const deleteCustomerRecord = (customerId) => {
+export const deleteCustomerRecord = async (customerId) => {
   const customerIndex = customers.findIndex(
     (customer) => customer.id === customerId
   );
