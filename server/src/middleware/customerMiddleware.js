@@ -1,12 +1,14 @@
+import mongoose from "mongoose";
+
 const isValidEmail = (email) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailPattern.test(email.trim());
 };
 
 export const validateCustomerId = (req, res, next) => {
-  const customerId = Number(req.params.id);
+  const customerId = req.params.id;
 
-  if (Number.isNaN(customerId)) {
+  if (!mongoose.isValidObjectId(customerId)) {
     return res.status(400).json({
       message: "Invalid customer ID",
     });

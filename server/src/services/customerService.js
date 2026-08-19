@@ -1,41 +1,18 @@
-const customers = [
-  {
-    id: 1,
-    name: "Northside Plumbing",
-    email: "contact@northsideplumbing.ca",
-  },
-  {
-    id: 2,
-    name: "GreenLeaf Landscaping",
-    email: "hello@greenleaf.ca",
-  },
-];
+import Customer from "../models/Customer.js";
 
 export const getAllCustomers = async () => {
-  return customers;
+  return Customer.find();
 };
 
 export const findCustomerById = async (customerId) => {
-  return customers.find(
-    (customer) => customer.id === customerId
-  );
+  return Customer.findById(customerId);
 };
 
 export const createCustomerRecord = async (name, email) => {
-  const nextId =
-    customers.length > 0
-      ? Math.max(...customers.map((customer) => customer.id)) + 1
-      : 1;
-
-  const newCustomer = {
-    id: nextId,
+  return Customer.create({
     name,
     email,
-  };
-
-  customers.push(newCustomer);
-
-  return newCustomer;
+  });
 };
 
 export const updateCustomerRecord = async (customer, name, email) => {
@@ -47,19 +24,9 @@ export const updateCustomerRecord = async (customer, name, email) => {
     customer.email = email;
   }
 
-  return customer;
+  return customer.save();
 };
 
 export const deleteCustomerRecord = async (customerId) => {
-  const customerIndex = customers.findIndex(
-    (customer) => customer.id === customerId
-  );
-
-  if (customerIndex === -1) {
-    return false;
-  }
-
-  customers.splice(customerIndex, 1);
-
-  return true;
+  return Customer.findByIdAndDelete(customerId);
 };
