@@ -37,6 +37,12 @@ export const createCustomer = async (req, res, next) => {
 
     return res.status(201).json(newCustomer);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "Customer email already exists",
+      });
+    }
+
     next(err);
   }
 };
@@ -63,6 +69,12 @@ export const updateCustomer = async (req, res, next) => {
 
     return res.status(200).json(updatedCustomer);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "Customer email already exists",
+      });
+    }
+
     next(err);
   }
 };
