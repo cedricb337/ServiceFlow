@@ -7,3 +7,7 @@ export const getAllJobs = async () => {
 export const createJobRecord = async (jobData) => {
   return Job.create(jobData);
 };
+
+export const findJobById = async (jobId) => {
+  return Job.findById(jobId);
+}

@@ -42,3 +42,16 @@ export const validateCreateJob = (req, res, next) => {
 
   next();
 };
+
+export const validateJobId = (req, res, next) => {
+  const jobId = req.params.id;
+
+  if (!mongoose.isValidObjectId(jobId)) {
+    return res.status(400).json({
+      message: "Invalid job ID",
+    });
+  }
+
+  req.jobId = jobId;
+  next();
+};
