@@ -9,5 +9,5 @@ export const createJobRecord = async (jobData) => {
 };
 
 export const findJobById = async (jobId) => {
-  return Job.findById(jobId);
-}
+  return Job.findById(jobId).populate("customer", "name email");
+};
