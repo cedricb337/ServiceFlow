@@ -27,3 +27,7 @@ export const updateJobRecord = async (job, title, description, status) => {
 
   return job.save();
 };
+
+export const deleteJobRecord = async (jobId) => {
+  return Job.findByIdAndDelete(jobId);
+};

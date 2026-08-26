@@ -1,4 +1,4 @@
-import { getAllJobs, createJobRecord, findJobById, updateJobRecord } from "../services/jobServices.js";
+import { getAllJobs, createJobRecord, findJobById, updateJobRecord, deleteJobRecord } from "../services/jobServices.js";
 import { findCustomerById } from "../services/customerService.js";
 
 export const getJobs = async (req, res, next) => {
@@ -72,6 +72,24 @@ export const updateJob = async (req, res, next) => {
     );
 
     return res.status(200).json(updatedJob);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteJob = async (req, res, next) => {
+  try {
+    const jobId = req.jobId;
+
+    const wasDeleted = await deleteJobRecord(jobId);
+
+    if (!wasDeleted) {
+      return res.status(404).json({
+        message: "Job not found",
+      });
+    }
+
+    return res.status(204).send();
   } catch (err) {
     next(err);
   }
