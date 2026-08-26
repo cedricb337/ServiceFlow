@@ -1,4 +1,4 @@
-import { getAllJobs, createJobRecord, findJobById } from "../services/jobServices.js";
+import { getAllJobs, createJobRecord, findJobById, updateJobRecord } from "../services/jobServices.js";
 import { findCustomerById } from "../services/customerService.js";
 
 export const getJobs = async (req, res, next) => {
@@ -45,6 +45,33 @@ export const getJobById = async (req, res, next) => {
     }
 
     res.status(200).json(existingJob);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateJob = async (req, res, next) => {
+  try {
+    const jobId = req.jobId;
+
+    const job = await findJobById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+      });
+    }
+
+    const { title, description, status } = req.body;
+
+    const updatedJob = await updateJobRecord(
+      job,
+      title,
+      description,
+      status
+    );
+
+    return res.status(200).json(updatedJob);
   } catch (err) {
     next(err);
   }
