@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import CustomerList from './components/CustomerList';
 
 function App() {
   const [customers, setCustomers] = useState([]);
@@ -39,13 +40,7 @@ function App() {
     {!loading && !error && (
       <>
         <h2>Customers</h2>
-
-        {customers.map((customer) => (
-          <div key={customer._id}>
-            <p>{customer.name}</p>
-            <p>{customer.email}</p>
-          </div>
-        ))}
+        <CustomerList customers={customers} />        
       </>
     )}
   </main>
