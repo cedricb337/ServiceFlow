@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import CustomerList from './components/CustomerList';
+import JobList from './components/JobList';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [jobs, setJobs] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
+  const [jobsError, setJobsError] = useState(null);
+
   useEffect(() => {
   const fetchCustomers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/customers");
+      const response = await fetch(`${API_URL}/api/customers`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch customers");
@@ -26,7 +33,26 @@ function App() {
     }
   };
 
+  const fetchJobs = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/jobs`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch jobs");
+    }
+
+    const data = await response.json();
+
+    setJobs(data);
+  } catch (err) {
+    setJobsError(err.message);
+  } finally {
+    setJobsLoading(false);
+  }
+};
+
   fetchCustomers();
+  fetchJobs();
 }, []);
 
   return (
@@ -43,6 +69,17 @@ function App() {
         <CustomerList customers={customers} />        
       </>
     )}
+
+    {jobsLoading && <p>Loading jobs...</p>}
+
+    {jobsError && <p>Error: {jobsError}</p>}
+
+    {!jobsLoading && !jobsError && (
+      <>
+        <h2>Jobs</h2>
+        <JobList jobs={jobs} />
+      </>
+)}
   </main>
 );
 }
