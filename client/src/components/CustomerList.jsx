@@ -1,4 +1,7 @@
 function CustomerList({ customers }) {
+  if (customers.length === 0) {
+    return <p>No customers found.</p>;
+  }
   return (
     <div>
       {customers.map((customer) => (

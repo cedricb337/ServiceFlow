@@ -7,8 +7,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [customersLoading, setCustomersLoading] = useState(true);
+  const [customersError, setCustomersError] = useState(null);
 
   const [jobs, setJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
@@ -27,9 +27,9 @@ function App() {
 
       setCustomers(data);
     } catch (err) {
-      setError(err.message);
+      setCustomersError(err.message);
     } finally {
-      setLoading(false);
+      setCustomersLoading(false);
     }
   };
 
@@ -56,32 +56,40 @@ function App() {
 }, []);
 
   return (
-  <main>
-    <h1>ServiceFlow</h1>
+  <>
+    <header>
+      <h1>ServiceFlow</h1>
+    </header>
 
-    {loading && <p>Loading customers...</p>}
+    <main>
+      <section>
+        {customersLoading && <p>Loading customers...</p>}
 
-    {error && <p>Error: {error}</p>}
+        {customersError && <p>Error: {customersError}</p>}
 
-    {!loading && !error && (
-      <>
-        <h2>Customers</h2>
-        <CustomerList customers={customers} />        
-      </>
-    )}
+        {!customersLoading && !customersError && (
+          <>
+            <h2>Customers</h2>
+            <CustomerList customers={customers} />
+          </>
+        )}
+      </section>
 
-    {jobsLoading && <p>Loading jobs...</p>}
+      <section>
+        {jobsLoading && <p>Loading jobs...</p>}
 
-    {jobsError && <p>Error: {jobsError}</p>}
+        {jobsError && <p>Error: {jobsError}</p>}
 
-    {!jobsLoading && !jobsError && (
-      <>
-        <h2>Jobs</h2>
-        <JobList jobs={jobs} />
-      </>
-)}
-  </main>
+        {!jobsLoading && !jobsError && (
+          <>
+            <h2>Jobs</h2>
+            <JobList jobs={jobs} />
+          </>
+        )}
+      </section>
+    </main>
+  </>
 );
 }
 
-export default App
+export default App;

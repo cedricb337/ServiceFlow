@@ -1,4 +1,7 @@
 function JobList({ jobs }) {
+  if (jobs.length === 0) {
+    return <p>No jobs found.</p>;
+  }
   return (
     <ul>
       {jobs.map((job) => (
