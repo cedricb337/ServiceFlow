@@ -1,0 +1,58 @@
+import { useState } from 'react'
+const API_URL = import.meta.env.VITE_API_URL;
+
+function CustomerForm({ onCustomerCreated }) {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [formError,setFormError] = useState("");
+
+    const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormError(null);
+
+  try {
+    const response = await fetch(`${API_URL}/api/customers`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ name, email }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create customer");
+    }
+
+    const newCustomer = await response.json();
+
+    onCustomerCreated(newCustomer);
+    setName("");
+    setEmail("");
+  } catch (err) {
+    setFormError(err.message);
+  }
+};
+    return (
+   <form onSubmit={handleSubmit}>
+        <input
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+        />
+
+        <input type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)} 
+        />
+        <button type="submit">
+            Create Customer
+        </button>
+
+        {formError && <p>Error: {formError}</p>}
+
+    </form>
+    );
+  
+}
+
+export default CustomerForm;

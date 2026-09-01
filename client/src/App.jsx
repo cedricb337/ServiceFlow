@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import CustomerList from './components/CustomerList';
 import JobList from './components/JobList';
+import CustomerForm from './components/CustomerForm';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +14,13 @@ function App() {
   const [jobs, setJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
   const [jobsError, setJobsError] = useState(null);
+
+  const handleCustomerCreated = (newCustomer) => {
+    setCustomers((previousCustomers) => [
+      ...previousCustomers,
+      newCustomer,
+    ])
+};
 
   useEffect(() => {
   const fetchCustomers = async () => {
@@ -70,6 +78,7 @@ function App() {
         {!customersLoading && !customersError && (
           <>
             <h2>Customers</h2>
+            <CustomerForm onCustomerCreated={handleCustomerCreated} />
             <CustomerList customers={customers} />
           </>
         )}
