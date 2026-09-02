@@ -19,11 +19,14 @@ function CustomerForm({ onCustomerCreated }) {
       body: JSON.stringify({ name, email }),
     });
 
+    const data = await response.json();
+    
+
     if (!response.ok) {
-      throw new Error("Failed to create customer");
+      throw new Error(data.message);
     }
 
-    const newCustomer = await response.json();
+    onCustomerCreated(data);
 
     onCustomerCreated(newCustomer);
     setName("");
