@@ -6,9 +6,12 @@ function CustomerForm({ onCustomerCreated }) {
     const [email, setEmail] = useState("");
     const [formError,setFormError] = useState("");
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError(null);
+    setIsSubmitting(true)
 
   try {
     const response = await fetch(`${API_URL}/api/customers`, {
@@ -28,11 +31,13 @@ function CustomerForm({ onCustomerCreated }) {
 
     onCustomerCreated(data);
 
-    onCustomerCreated(newCustomer);
+    
     setName("");
     setEmail("");
   } catch (err) {
     setFormError(err.message);
+  } finally {
+    setIsSubmitting(false);
   }
 };
     return (
@@ -47,8 +52,8 @@ function CustomerForm({ onCustomerCreated }) {
             value={email}
             onChange={(event) => setEmail(event.target.value)} 
         />
-        <button type="submit">
-            Create Customer
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Creating customer" : "Create Customer"};
         </button>
 
         {formError && <p>Error: {formError}</p>}
