@@ -1,4 +1,4 @@
-function CustomerList({ customers }) {
+function CustomerList({ customers, onCustomerDeleted }) {
   if (customers.length === 0) {
     return <p>No customers found.</p>;
   }
@@ -8,6 +8,10 @@ function CustomerList({ customers }) {
         <div key={customer._id}>
           <p>{customer.name}</p>
           <p>{customer.email}</p>
+          <button type="button"
+           onClick={() => onCustomerDeleted(customer._id)}>
+            Delete
+          </button>
         </div>
       ))}
     </div>

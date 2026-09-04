@@ -22,6 +22,19 @@ function App() {
     ])
 };
 
+  const handleCustomerDeleted = async (customerId) => {
+  const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete customer");
+  }
+
+  setCustomers((prev) =>
+  prev.filter((customer) => customer._id !== customerId)
+);
+};
+
   useEffect(() => {
   const fetchCustomers = async () => {
     try {
@@ -79,7 +92,7 @@ function App() {
           <>
             <h2>Customers</h2>
             <CustomerForm onCustomerCreated={handleCustomerCreated} />
-            <CustomerList customers={customers} />
+            <CustomerList customers={customers} onCustomerDeleted={handleCustomerDeleted}/>
           </>
         )}
       </section>
