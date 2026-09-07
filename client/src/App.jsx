@@ -15,6 +15,8 @@ function App() {
   const [jobsLoading, setJobsLoading] = useState(true);
   const [jobsError, setJobsError] = useState(null);
 
+  const [deleteError, setDeleteError] = useState(null);
+
   const handleCustomerCreated = (newCustomer) => {
     setCustomers((previousCustomers) => [
       ...previousCustomers,
@@ -23,16 +25,21 @@ function App() {
 };
 
   const handleCustomerDeleted = async (customerId) => {
-  const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to delete customer");
-  }
+      try {
+      setDeleteError(null);
+      const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete customer");
+      }
 
-  setCustomers((prev) =>
-  prev.filter((customer) => customer._id !== customerId)
+    setCustomers((prev) =>
+    prev.filter((customer) => customer._id !== customerId)
 );
+  } catch (error) {
+    setDeleteError(error.message);
+  }
 };
 
   useEffect(() => {
@@ -88,6 +95,8 @@ function App() {
 
         {customersError && <p>Error: {customersError}</p>}
 
+        {deleteError && <p>Error: {deleteError}</p>}
+
         {!customersLoading && !customersError && (
           <>
             <h2>Customers</h2>
@@ -113,5 +122,6 @@ function App() {
   </>
 );
 }
+
 
 export default App;
