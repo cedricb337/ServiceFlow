@@ -25,6 +25,11 @@ function App() {
 };
 
   const handleCustomerDeleted = async (customerId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this customer?");
+
+    if (!confirmDelete) {
+        return;
+    }
       try {
       setDeleteError(null);
       const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
