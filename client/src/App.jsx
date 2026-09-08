@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import CustomerList from './components/CustomerList';
-import JobList from './components/JobList';
-import CustomerForm from './components/CustomerForm';
+import { useEffect, useState } from "react";
+import "./App.css";
+import CustomerList from "./components/CustomerList";
+import JobList from "./components/JobList";
+import CustomerForm from "./components/CustomerForm";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,112 +21,162 @@ function App() {
     setCustomers((previousCustomers) => [
       ...previousCustomers,
       newCustomer,
-    ])
-};
+    ]);
+  };
 
   const handleCustomerDeleted = async (customerId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this customer?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this customer?"
+    );
 
     if (!confirmDelete) {
-        return;
+      return;
     }
-      try {
+
+    try {
       setDeleteError(null);
-      const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
-        method: "DELETE",
-      });
+
+      const response = await fetch(
+        `${API_URL}/api/customers/${customerId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to delete customer");
       }
 
-    setCustomers((prev) =>
-    prev.filter((customer) => customer._id !== customerId)
-);
-  } catch (error) {
-    setDeleteError(error.message);
-  }
-};
-
-  useEffect(() => {
-  const fetchCustomers = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/customers`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch customers");
-      }
-
-      const data = await response.json();
-
-      setCustomers(data);
-    } catch (err) {
-      setCustomersError(err.message);
-    } finally {
-      setCustomersLoading(false);
+      setCustomers((prev) =>
+        prev.filter((customer) => customer._id !== customerId)
+      );
+    } catch (error) {
+      setDeleteError(error.message);
     }
   };
 
-  const fetchJobs = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/jobs`);
+  const handleCustomerUpdated = async (customerId, name, email) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/customers/${customerId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+          }),
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch jobs");
+      if (!response.ok) {
+        throw new Error("Failed to update customer");
+      }
+
+      const updatedCustomer = await response.json();
+
+      setCustomers((prev) =>
+        prev.map((customer) =>
+          customer._id === updatedCustomer._id
+            ? updatedCustomer
+            : customer
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
+  };
 
-    const data = await response.json();
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/customers`);
 
-    setJobs(data);
-  } catch (err) {
-    setJobsError(err.message);
-  } finally {
-    setJobsLoading(false);
-  }
-};
+        if (!response.ok) {
+          throw new Error("Failed to fetch customers");
+        }
 
-  fetchCustomers();
-  fetchJobs();
-}, []);
+        const data = await response.json();
+
+        setCustomers(data);
+      } catch (err) {
+        setCustomersError(err.message);
+      } finally {
+        setCustomersLoading(false);
+      }
+    };
+
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/jobs`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs");
+        }
+
+        const data = await response.json();
+
+        setJobs(data);
+      } catch (err) {
+        setJobsError(err.message);
+      } finally {
+        setJobsLoading(false);
+      }
+    };
+
+    fetchCustomers();
+    fetchJobs();
+  }, []);
 
   return (
-  <>
-    <header>
-      <h1>ServiceFlow</h1>
-    </header>
+    <>
+      <header>
+        <h1>ServiceFlow</h1>
+      </header>
 
-    <main>
-      <section>
-        {customersLoading && <p>Loading customers...</p>}
+      <main>
+        <section>
+          {customersLoading && <p>Loading customers...</p>}
 
-        {customersError && <p>Error: {customersError}</p>}
+          {customersError && <p>Error: {customersError}</p>}
 
-        {deleteError && <p>Error: {deleteError}</p>}
+          {deleteError && <p>Error: {deleteError}</p>}
 
-        {!customersLoading && !customersError && (
-          <>
-            <h2>Customers</h2>
-            <CustomerForm onCustomerCreated={handleCustomerCreated} />
-            <CustomerList customers={customers} onCustomerDeleted={handleCustomerDeleted}/>
-          </>
-        )}
-      </section>
+          {!customersLoading && !customersError && (
+            <>
+              <h2>Customers</h2>
 
-      <section>
-        {jobsLoading && <p>Loading jobs...</p>}
+              <CustomerForm
+                onCustomerCreated={handleCustomerCreated}
+              />
 
-        {jobsError && <p>Error: {jobsError}</p>}
+              <CustomerList
+                customers={customers}
+                onCustomerDeleted={handleCustomerDeleted}
+                onCustomerUpdated={handleCustomerUpdated}
+              />
+            </>
+          )}
+        </section>
 
-        {!jobsLoading && !jobsError && (
-          <>
-            <h2>Jobs</h2>
-            <JobList jobs={jobs} />
-          </>
-        )}
-      </section>
-    </main>
-  </>
-);
+        <section>
+          {jobsLoading && <p>Loading jobs...</p>}
+
+          {jobsError && <p>Error: {jobsError}</p>}
+
+          {!jobsLoading && !jobsError && (
+            <>
+              <h2>Jobs</h2>
+              <JobList jobs={jobs} />
+            </>
+          )}
+        </section>
+      </main>
+    </>
+  );
 }
-
 
 export default App;
