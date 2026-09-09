@@ -5,6 +5,7 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editError, setEditError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleEdit = (customer) => {
     setEditCustomerId(customer._id);
@@ -17,6 +18,7 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
   }
 
   const handleSave = async () => {
+    setIsSaving(true);
   try {
     setEditError(null);
 
@@ -25,6 +27,8 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
     setEditCustomerId(null);
   } catch (error) {
     setEditError(error.message);
+  } finally {
+    setIsSaving(false);
   }
 };
 
@@ -54,13 +58,15 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
               <button
                 type="button"
                 onClick={handleSave}
+                disabled={isSaving}
                 >
-                  Save
+                  {isSaving ? "Saving..." : "Save"};
                 </button>
 
               <button
                 type="button"
                 onClick={handleCancel}
+                disabled={isSaving}
                 >
                   Cancel
                 </button>
