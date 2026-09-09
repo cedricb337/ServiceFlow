@@ -18,7 +18,25 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
   }
 
   const handleSave = async () => {
+    if (editName.trim() === "") {
+      setEditError("Name is required");
+      return;
+    }
+
+    if (editEmail.trim() === "") {
+      setEditError("Email is required");
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(editEmail.trim())) {
+      setEditError("Email format is invalid");
+      return;
+    }
+
     setIsSaving(true);
+    
   try {
     setEditError(null);
 
@@ -60,7 +78,7 @@ function CustomerList({ customers, onCustomerDeleted, onCustomerUpdated }) {
                 onClick={handleSave}
                 disabled={isSaving}
                 >
-                  {isSaving ? "Saving..." : "Save"};
+                  {isSaving ? "Saving..." : "Save"}
                 </button>
 
               <button
