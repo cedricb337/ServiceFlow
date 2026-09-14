@@ -8,6 +8,8 @@ function JobList({ jobs }) {
         <li key={job._id}>
           <h3>{job.title}</h3>
           <p>Status: {job.status}</p>
+          <p>Customer: {job.customer.name}</p>
+          <p>Email: {job.customer.email}</p>
           <p>{job.description}</p>
         </li>
       ))}
