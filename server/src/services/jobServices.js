@@ -5,7 +5,9 @@ export const getAllJobs = async () => {
 };
 
 export const createJobRecord = async (jobData) => {
-  return Job.create(jobData);
+  const createdJob = await Job.create(jobData);
+  await createdJob.populate("customer", "name email");
+  return createdJob;
 };
 
 export const findJobById = async (jobId) => {

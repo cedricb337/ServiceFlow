@@ -3,6 +3,7 @@ import "./App.css";
 import CustomerList from "./components/CustomerList";
 import JobList from "./components/JobList";
 import CustomerForm from "./components/CustomerForm";
+import JobForm from "./components/JobForm";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -18,15 +19,16 @@ function App() {
   const [deleteError, setDeleteError] = useState(null);
 
   const handleCustomerCreated = (newCustomer) => {
-    setCustomers((previousCustomers) => [
-      ...previousCustomers,
-      newCustomer,
-    ]);
+    setCustomers((previousCustomers) => [...previousCustomers, newCustomer]);
+  };
+
+  const handleJobCreated = (newJob) => {
+    setJobs((previousJobs) => [...previousJobs, newJob]);
   };
 
   const handleCustomerDeleted = async (customerId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this customer?"
+      "Are you sure you want to delete this customer?",
     );
 
     if (!confirmDelete) {
@@ -36,19 +38,16 @@ function App() {
     try {
       setDeleteError(null);
 
-      const response = await fetch(
-        `${API_URL}/api/customers/${customerId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete customer");
       }
 
       setCustomers((prev) =>
-        prev.filter((customer) => customer._id !== customerId)
+        prev.filter((customer) => customer._id !== customerId),
       );
     } catch (error) {
       setDeleteError(error.message);
@@ -57,19 +56,16 @@ function App() {
 
   const handleCustomerUpdated = async (customerId, name, email) => {
     try {
-      const response = await fetch(
-        `${API_URL}/api/customers/${customerId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update customer");
@@ -79,10 +75,8 @@ function App() {
 
       setCustomers((prev) =>
         prev.map((customer) =>
-          customer._id === updatedCustomer._id
-            ? updatedCustomer
-            : customer
-        )
+          customer._id === updatedCustomer._id ? updatedCustomer : customer,
+        ),
       );
     } catch (error) {
       console.error(error);
@@ -149,9 +143,7 @@ function App() {
             <>
               <h2>Customers</h2>
 
-              <CustomerForm
-                onCustomerCreated={handleCustomerCreated}
-              />
+              <CustomerForm onCustomerCreated={handleCustomerCreated} />
 
               <CustomerList
                 customers={customers}
@@ -170,6 +162,7 @@ function App() {
           {!jobsLoading && !jobsError && (
             <>
               <h2>Jobs</h2>
+              <JobForm customers={customers} onJobCreated={handleJobCreated} />
               <JobList jobs={jobs} />
             </>
           )}
