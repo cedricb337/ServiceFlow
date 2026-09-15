@@ -18,6 +18,8 @@ function App() {
 
   const [deleteError, setDeleteError] = useState(null);
 
+  const [jobDeleteError, setJobDeleteError] = useState(null);
+
   const handleCustomerCreated = (newCustomer) => {
     setCustomers((previousCustomers) => [...previousCustomers, newCustomer]);
   };
@@ -51,6 +53,33 @@ function App() {
       );
     } catch (error) {
       setDeleteError(error.message);
+    }
+  };
+
+  const handleJobDeleted = async (jobId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this job?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setJobDeleteError(null);
+    try {
+      const response = await fetch(`${API_URL}/api/jobs/${jobId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete job");
+      }
+
+      setJobs((previousJobs) =>
+        previousJobs.filter((job) => job._id !== jobId),
+      );
+    } catch (error) {
+      setJobDeleteError(error.message);
     }
   };
 
@@ -159,11 +188,13 @@ function App() {
 
           {jobsError && <p>Error: {jobsError}</p>}
 
+          {jobDeleteError && <p>{jobDeleteError}</p>}
+
           {!jobsLoading && !jobsError && (
             <>
               <h2>Jobs</h2>
               <JobForm customers={customers} onJobCreated={handleJobCreated} />
-              <JobList jobs={jobs} />
+              <JobList jobs={jobs} onJobDeleted={handleJobDeleted} />
             </>
           )}
         </section>

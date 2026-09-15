@@ -1,4 +1,4 @@
-function JobList({ jobs }) {
+function JobList({ jobs, onJobDeleted }) {
   if (jobs.length === 0) {
     return <p>No jobs found.</p>;
   }
@@ -11,6 +11,8 @@ function JobList({ jobs }) {
           <p>Customer: {job.customer.name}</p>
           <p>Email: {job.customer.email}</p>
           <p>{job.description}</p>
+
+          <button onClick={() => onJobDeleted(job._id)}>Delete</button>
         </li>
       ))}
     </ul>
