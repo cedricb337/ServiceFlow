@@ -27,7 +27,9 @@ export const updateJobRecord = async (job, title, description, status) => {
     job.status = status;
   }
 
-  return job.save();
+  await job.save();
+
+  return Job.findById(job._id).populate("customer", "name email");
 };
 
 export const deleteJobRecord = async (jobId) => {

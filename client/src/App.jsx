@@ -83,6 +83,14 @@ function App() {
     }
   };
 
+  const handleJobUpdated = (updatedJob) => {
+    setJobs((previousJobs) =>
+      previousJobs.map((job) =>
+        job._id === updatedJob._id ? updatedJob : job,
+      ),
+    );
+  };
+
   const handleCustomerUpdated = async (customerId, name, email) => {
     try {
       const response = await fetch(`${API_URL}/api/customers/${customerId}`, {
@@ -194,7 +202,11 @@ function App() {
             <>
               <h2>Jobs</h2>
               <JobForm customers={customers} onJobCreated={handleJobCreated} />
-              <JobList jobs={jobs} onJobDeleted={handleJobDeleted} />
+              <JobList
+                jobs={jobs}
+                onJobDeleted={handleJobDeleted}
+                onJobUpdated={handleJobUpdated}
+              />
             </>
           )}
         </section>
