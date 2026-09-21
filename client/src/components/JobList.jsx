@@ -113,8 +113,12 @@ function JobList({ jobs, onJobDeleted, onJobUpdated }) {
             </>
           )}
 
-          <button onClick={() => onJobDeleted(job._id)}>Delete</button>
-          <button onClick={() => handleEdit(job)}>Edit</button>
+          <button onClick={() => onJobDeleted(job._id)} disabled={isSaving}>
+            Delete
+          </button>
+          <button onClick={() => handleEdit(job)} disabled={isSaving}>
+            Edit
+          </button>
         </li>
       ))}
     </ul>
