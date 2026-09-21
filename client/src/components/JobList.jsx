@@ -18,8 +18,19 @@ function JobList({ jobs, onJobDeleted, onJobUpdated }) {
     setEditError(null);
   };
 
+  const handleCancel = () => {
+    setEditingJobId(null);
+    setEditError(null);
+  };
+
   const handleSave = async (jobId) => {
     setEditError(null);
+
+    if (editTitle.trim() === "") {
+      setEditError("Please enter a title");
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -81,6 +92,10 @@ function JobList({ jobs, onJobDeleted, onJobUpdated }) {
 
               <button onClick={() => handleSave(job._id)} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save"}
+              </button>
+
+              <button onClick={handleCancel} disabled={isSaving}>
+                Cancel
               </button>
 
               {editError && <p>Error: {editError}</p>}
